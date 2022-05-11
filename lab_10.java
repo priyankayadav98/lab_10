@@ -5,87 +5,66 @@ import java.util.List;
 import java.util.Scanner;
 
 class Lab_10{
-    public static void main(String args[]) {
-        if (args.length == 3) {
-            System.out.println("Login successfull");
-            String name=args[0];
-            String pass=args[1];
-            String type=args[2];
-            login user1=new login(name,pass,type);
+    public static void main(String args[]) throws InterruptedException {
 
-        }
-        else
-        {
-            System.out.println("Login unsuccessfull");
-            System.exit(0);
-    }
-
-       String name=args[0];
-        String pass=args[1];
-        String type=args[2];
-
-        login user1=new login(name,pass,type);
-        System.out.println("You user-name is = "+user1.userName+" and Type  = "+user1.type);
-
-        drug drug0=new drug(14,"ultraset","for headache",2,30);
-        drug0.generate_bill();
-
+          // implementing  creating thread using runnable interface and setting priority.
         customer cust1 = new customer(16,"Divya","1234567890",12);
+        customer cust2 = new customer(17,"kumar","5234567890",13);
         Thread t2 = new Thread(cust1);
-        t2.start();
-        // cust1.order_drug(drug0.d_id);
+        Thread t3 = new Thread(cust2);
 
-        //constructor overloading and chaining
+        System.out.println("Priority of the thread t2 is : " + t2.getPriority());  
+        System.out.println("Priority of the thread t3 is : " + t3.getPriority());  
+        t2.setPriority(6);  
+        System.out.println("Priority of the thread thread 2 is : " + t2.getPriority());  
+        t2.start();
+        // implementing notify() and notifyAll() 
+        login l = new login();
+        l.start();
+        // System.out.println("total attempts:"+user3.attempts);
+        synchronized(l){
+        l.wait(); 
+            System.out.println("Actual total attempts:" +l.attempts);
+    }
+    //synchronized thread implementation
+
+    // Company obj = new Company();
+    // customer cust3 = new customer(obj);
+    // customer cust4 = new customer(obj);
+    // Thread t4 = new Thread(cust3);
+    // Thread t5 = new Thread(cust4);
+    // t4.start();
+    // t5.start();
+    
+       // implementing join() method
         drug drug1 = new drug(1, "Paracetamol", "Antibody drug.", 10);
         drug1.start();
-        //inheritance demonstration
-        // drug1.generate_bill();
-        // drug d = new drug("MANKIND ","JAYNAGAR");
-        // d.generate_sales();
-        drug drug2 = new drug(2, "Sinerest", "Antibody drug(fever).", 20, 90);
-        drug2.generate_bill();
+        try {
+           drug1.join(); // calling join() method
+         } catch(Exception e) {
+            System.out.println(e);
+         }
         
-Branches bt = new Branches(1,"piu",1998,2,500,200);
+        drug drug2 = new drug(2, "Sinerest", "Antibody drug(fever).", 20, 90);
+        //  drug2.generate_bill();
+        drug2.start();
+
+        //creating thread through extends threads.
+        Branches bt = new Branches(1,"piu",1998,2,500,200);
         Thread t = new Thread(bt);
         t.start();
-        //shallow copy
-        drug drug3 = drug2;
-        System.out.println("\nShallow copy: drug2 - " + drug2 + " and drug3 - "+ drug3);
-        //deep copy and constructor chaining
-        drug drug4 = new drug(drug2);
-        System.out.println("Deep copy: drug2 - " + drug2 + " and drug4 - "+ drug4+"\n");
-
-        //function overloading
-        customer customer1 = new customer(1, "Rasgulla", "9900160224", 6969);
-        customer1.search_drug(2);
-        customer1.search_drug("dolo");
-        customer1.search_drug(2, "dolo");
-        customer1.search_drug(3, "dolo");
-
-        //static variables
-        System.out.println("\nStatic variables");
-        System.out.println("Drug type 1: " + drug.drug_type1);
-        System.out.println("Drug type 2: " + drug.drug_type2);
-        System.out.println("Drug type 3: " + drug.drug_type3);
-
-        //static methods and overloading
-        System.out.println("\nStatic methods and overloading");
-        drug.printDrugTypes();
-        drug.printDrugTypes("type1");
-        drug.printDrugTypes("type4");
-
-        //nested static class
-        System.out.println("\nNested Static class");
-        drug.DrugCountry drug5 = new drug.DrugCountry();
-        drug5.IndiaDrug();
        
     }
 }
-class login
+class login extends Thread
  {
     public String userName;
     private String password;
     public String type;
+    public int i;
+    public int attempts = 0;
+
+    
 
     public login(){
         System.out.println("Enter Username : ");
@@ -101,13 +80,22 @@ class login
         sc.close();
     }
 
-	  public login(String userName, String password, String type)
+	  public login(String userName, String password, String type,int attempts)
     {
       this.userName=userName;
       this.password=password;
       this.type=type;
 	}
-
+    public  void run(){
+     synchronized(this){
+         for(i = 1; i<3; i++){
+             attempts = attempts + 1;
+         }
+        this.notify();
+        //will notify all the waiting threads
+        // this.notifyAll();
+     }
+    }
     public void setUserName(String userName){
 		  this.userName=userName;
 	  }
@@ -137,6 +125,8 @@ class drug extends Thread
     public int quantity;
     public float cost;
     public int drug_rating;
+  
+    
 
     static String drug_type1;
     static String drug_type2;
@@ -149,6 +139,7 @@ class drug extends Thread
     }
 
     //constructor overloading and chaining
+    
     public drug(int d_id, String name,String description,int quantity)
     {
         this.d_id=d_id;
@@ -210,6 +201,7 @@ class drug extends Thread
         total_cost = this.cost * this.quantity;
         System.out.println("This is the thread calculating on new price");
         System.out.println("Amount paid: "+total_cost);
+      
     }
 
     private float calculate_cost(int d_id){
@@ -240,6 +232,11 @@ class customer implements Runnable {
     public String cust_name;
     public String phone_no;
     public int presc_id;
+    // Company company;
+
+    // customer(Company company){
+    //     this.company = company;
+    // }
 
     public customer(int cust_id, String cust_name, String phone_no, int presc_id)
     {
@@ -313,6 +310,8 @@ class customer implements Runnable {
     }
     public void run(){
       System.out.println("this is second thread running");
+    //   company.generate_alert();
+
     }
 
   
@@ -362,9 +361,66 @@ class Branches implements Runnable{
         System.out.println("Branch id: "+this.b_id);
         System.out.println("Branch name: "+this.name);
         System.out.println("Year: "+this.year);
+        // System.out.println("The Yearly profit is: "+ yearly_profit);
+        try{Thread.sleep(10000);}
+        catch(InterruptedException e)
+        {System.out.println(e);
+        }  
         System.out.println("The Yearly profit is: "+ yearly_profit);
     }
 }
+// class Company {
+//     public int comp_id;
+//     public String name;
+//     public String address;
+//     public int years = 5;
+//     public int sales;
+//     public double profit;
+    
+
+    
+
+//     public Company(){
+//         Scanner sc= new Scanner(System.in);
+//         this.comp_id = sc.nextInt();
+//         sc.close();
+//     }
+
+//     public Company(String name,String address){
+//         this.name = name;
+//         this.address = address;
+//          System.out.println("Enter your sales:");
+//          this.sales = sales;
+//          Scanner sc = new Scanner(System.in);
+//         this.sales = sc.nextInt();
+      
+//     }
+
+  
+//     synchronized public void generate_alert(){
+//            System.out.println("The company id:"+this.comp_id);
+//             if(this.sales > 0 && this.sales < 30 ){
+//                 // System.out.println("Enter your sales:");
+//                 profit = ((this.sales/30.0)* 100);
+//                 System.out.println("Profit monthly:"+profit);
+               
+//             }
+//             try
+//             {
+//                 Thread.sleep(400);
+//             }
+//             catch (Exception e)
+//             {
+//                 System.out.println(e);
+//             }
+            
+            
+//         } 
+
+//  }
+
+
+
 
 
 
