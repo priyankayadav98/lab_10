@@ -28,13 +28,13 @@ class Lab_10{
     }
     //synchronized thread implementation
 
-    // Company obj = new Company();
-    // customer cust3 = new customer(obj);
-    // customer cust4 = new customer(obj);
-    // Thread t4 = new Thread(cust3);
-    // Thread t5 = new Thread(cust4);
-    // t4.start();
-    // t5.start();
+    Company obj = new Company();
+    customer cust3 = new customer(obj);
+    customer cust4 = new customer(obj);
+    Thread t4 = new Thread(cust3);
+    Thread t5 = new Thread(cust4);
+    t4.start();
+    t5.start();
     
        // implementing join() method
         drug drug1 = new drug(1, "Paracetamol", "Antibody drug.", 10);
@@ -369,58 +369,55 @@ class Branches implements Runnable{
         System.out.println("The Yearly profit is: "+ yearly_profit);
     }
 }
-// class Company {
-//     public int comp_id;
-//     public String name;
-//     public String address;
-//     public int years = 5;
-//     public int sales;
-//     public double profit;
+class Company {
+    public int comp_id;
+    public String name;
+    public String address;
+    public int years = 5;
+    public int sales;
+    public double profit;
     
 
     
 
-//     public Company(){
-//         Scanner sc= new Scanner(System.in);
-//         this.comp_id = sc.nextInt();
-//         sc.close();
-//     }
+    public Company(){
+        Scanner sc= new Scanner(System.in);
+        this.comp_id = sc.nextInt();
+        sc.close();
+    }
 
-//     public Company(String name,String address){
-//         this.name = name;
-//         this.address = address;
-//          System.out.println("Enter your sales:");
-//          this.sales = sales;
-//          Scanner sc = new Scanner(System.in);
-//         this.sales = sc.nextInt();
+    public Company(String name,String address){
+        this.name = name;
+        this.address = address;
+         System.out.println("Enter your sales:");
+         this.sales = sales;
+         Scanner sc = new Scanner(System.in);
+        this.sales = sc.nextInt();
       
-//     }
+    }
 
   
-//     synchronized public void generate_alert(){
-//            System.out.println("The company id:"+this.comp_id);
-//             if(this.sales > 0 && this.sales < 30 ){
-//                 // System.out.println("Enter your sales:");
-//                 profit = ((this.sales/30.0)* 100);
-//                 System.out.println("Profit monthly:"+profit);
+    synchronized public void generate_alert(){
+           System.out.println("The company id:"+this.comp_id);
+            if(this.sales > 0 && this.sales < 30 ){
+                // System.out.println("Enter your sales:");
+                profit = ((this.sales/30.0)* 100);
+                System.out.println("Profit monthly:"+profit);
                
-//             }
-//             try
-//             {
-//                 Thread.sleep(400);
-//             }
-//             catch (Exception e)
-//             {
-//                 System.out.println(e);
-//             }
+            }
+            try
+            {
+                Thread.sleep(400);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e);
+            }
             
             
-//         } 
+        } 
 
-//  }
-
-
-
+ }
 
 
 
